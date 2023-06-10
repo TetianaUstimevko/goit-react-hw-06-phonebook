@@ -1,24 +1,24 @@
-import React from 'react';
-import s from './Filter.module.css';
-import PropTypes from 'prop-types';
+import { createSlice } from '@reduxjs/toolkit';
 
-const Filter = ({ value, onChange }) => (
-  <div className={s.filter}>
-    <label className={s.labelFilter}>
-      Filter
-      <input
-        type="name"
-        value={value}
-        onChange={onChange}
-        className={s.filterInput}
-      />
-    </label>
-  </div>
-);
+const contactsSlice = createSlice({
+  name: 'contacts',
+  initialState: {
+    list: [],
+    filter: '',
+  },
+  reducers: {
+    addContact: (state, action) => {
+      state.list.push(action.payload);
+    },
+    deleteContact: (state, action) => {
+      state.list = state.list.filter(contact => contact.id !== action.payload);
+    },
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
+  },
+});
 
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
+export const { addContact, deleteContact, setFilter } = contactsSlice.actions;
 
-export default Filter;
+export default contactsSlice.reducer;

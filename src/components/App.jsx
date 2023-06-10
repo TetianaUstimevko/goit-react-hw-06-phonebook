@@ -1,83 +1,41 @@
-import React, { Component } from 'react';
-import shortid from 'shortid';
-import s from './App.module.css';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ContactList from './ContactList/ContactList';
-import ContactForm from './ContactForm';
-import Filter from './Filter';
-import Notification from './Notification';
+import ContactForm from './ContactForm/ContactForm';
+import Filter from './Filter/Filter';
+import Notification from './Notification/Notification'
+import { addContact, deleteContact, updateFilter, selectContacts } from 'redux/contactsSlice';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from 'redux/store';
 
-class App extends Component {
-  state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+const App = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
 
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
+  useEffect(() => {
+    dispatch(loadContacts());
+  }, [dispatch]);
 
-    if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
-
-  addContact = ({ name, number }) => {
-    const normalizedName = name.toLowerCase();
-
-    const isAdded = this.state.contacts.find(
-      el => el.name.toLowerCase() === normalizedName
-    );
-
-    if (isAdded) {
-      alert(`${name} is already in contacts`);
-      return;
-    }
-
+  const handleAddContact = ({ name, number }) => {
     const contact = {
-      id: shortid.generate(),
-      name: name,
-      number: number,
+      id: Date.now().toString(),
+      name,
+      number,
     };
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-    }));
+
+    dispatch(addContact(contact));
   };
 
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const handleDeleteContact = (contactId) => {
+    dispatch(deleteContact(contactId));
   };
 
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
+  const handleFilterChange = (filterValue) => {
+    dispatch(updateFilter(filterValue));
   };
 
-  deleteContact = todoId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== todoId),
-    }));
-  };
-
-  render() {
-    const { contacts, filter } = this.state;
-    const visibleContacts = this.getVisibleContacts();
-
-    return (
+  return (
+    <PersistGate loading={null} persistor={persistor}>
       <div
         style={{
           display: 'flex',
@@ -89,25 +47,22 @@ class App extends Component {
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContact} />
+        <ContactForm onSubmit={handleAddContact} />
 
         <h2 className={s.titleContacts}>Contacts</h2>
         <div className={s.allContacts}>All contacts: {contacts.length}</div>
 
         {contacts.length > 0 ? (
           <>
-            <Filter value={filter} onChange={this.changeFilter} />
-            <ContactList
-              contacts={visibleContacts}
-              onDeleteContact={this.deleteContact}
-            />
+            <Filter onChange={handleFilterChange} />
+            <ContactList contacts={contacts} onDeleteContact={handleDeleteContact} />
           </>
         ) : (
           <Notification message="Contact list is empty" />
         )}
       </div>
-    );
-  }
-}
+    </PersistGate>
+  );
+};
 
 export default App;
