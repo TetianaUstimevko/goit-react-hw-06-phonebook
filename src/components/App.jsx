@@ -4,13 +4,14 @@ import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import Notification from './Notification/Notification'
-import { addContact, deleteContact, updateFilter, selectContacts } from 'redux/contactsSlice';
+import { addContact, deleteContact, updateFilter, loadContacts } from 'redux/contactsSlice';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from 'redux/store';
+import { persistor } from 'redux/store';
+import s from './App.module.css';
 
 const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(selectContacts);
+  const contacts = useSelector((state) => state.contacts.list);
 
   useEffect(() => {
     dispatch(loadContacts());
