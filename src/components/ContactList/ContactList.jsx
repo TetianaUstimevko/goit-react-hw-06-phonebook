@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import ContactItem from 'components/ContactItem/ContactItem';
 
 const ContactList = ({ onDeleteContact }) => {
-  const contacts = useSelector(state => state.contacts);
+ 
+  const contacts = useSelector((state) => state.list); 
 
   return (
     <ul>

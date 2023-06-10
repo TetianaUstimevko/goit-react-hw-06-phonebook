@@ -11,7 +11,7 @@ import s from './App.module.css';
 
 const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector((state) => state.contacts.list);
+  const contacts = useSelector((state) => state.list);
 
   useEffect(() => {
     dispatch(loadContacts());
