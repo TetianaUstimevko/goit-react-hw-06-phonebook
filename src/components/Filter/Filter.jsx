@@ -1,31 +1,6 @@
-// Filter.jsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
-// import { createSlice } from '@reduxjs/toolkit';
 import { setFilter } from 'redux/contactsSlice';
-
-// const contactsSlice = createSlice({
-//   name: 'contacts',
-//   initialState: {
-//     list: [],
-//     filter: '',
-//   },
-//   reducers: {
-//     addContact: (state, action) => {
-//       state.list.push(action.payload);
-//     },
-//     deleteContact: (state, action) => {
-//       state.list = state.list.filter(contact => contact.id !== action.payload);
-//     },
-//     setFilter: (state, action) => {
-//       state.filter = action.payload;
-//     },
-//   },
-// });
-
-// export const { addContact, deleteContact, setFilter } = contactsSlice.actions;
-
-// export default contactsSlice.reducer;
 
 const Filter = ({ onChange }) => {
   const dispatch = useDispatch();
@@ -33,8 +8,7 @@ const Filter = ({ onChange }) => {
   const handleChange = (event) => {
     const filterValue = event.target.value;
     dispatch(setFilter(filterValue));
-    onChange(filterValue);
-  };
+      };
 
   return (
     <div>

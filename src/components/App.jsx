@@ -1,34 +1,16 @@
-// App.jsx
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import Notification from './Notification/Notification';
-import {
-  addContact,
-  deleteContact,
-  setFilter
-} from 'redux/contactsSlice';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor } from 'redux/store';
 import s from './App.module.css';
+import { selectContacts } from 'redux/selectors';
 
 const App = () => {
-  const dispatch = useDispatch();
-  const contacts = useSelector(state => state.list);
-
-  const handleAddContact = contact => {
-    dispatch(addContact(contact));
-  };
-
-  const handleDeleteContact = contactId => {
-    dispatch(deleteContact(contactId));
-  };
-
-  const handleFilterChange = filterValue => {
-    dispatch(setFilter(filterValue));
-  };
+  const contacts = useSelector(selectContacts);
 
   return (
     <PersistGate loading={null} persistor={persistor}>
@@ -43,18 +25,15 @@ const App = () => {
         }}
       >
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={handleAddContact} />
+        <ContactForm />
 
         <h2 className={s.titleContacts}>Contacts</h2>
         <div className={s.allContacts}>All contacts: {contacts.length}</div>
 
         {contacts.length > 0 ? (
           <>
-            <Filter onChange={handleFilterChange} />
-            <ContactList
-              contacts={contacts}
-              onDeleteContact={handleDeleteContact}
-            />
+            <Filter />
+            <ContactList />
           </>
         ) : (
           <Notification message="Contact list is empty" />
