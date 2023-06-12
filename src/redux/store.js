@@ -6,6 +6,7 @@ import contactsReducer from 'redux/contactsSlice';
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['filter'], // Виключаю фыльтр зі збереження в локальне сховище
 };
 
 const persistedReducer = persistReducer(persistConfig, contactsReducer);
