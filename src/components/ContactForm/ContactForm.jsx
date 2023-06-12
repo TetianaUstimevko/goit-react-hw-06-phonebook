@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, selectContacts } from 'redux/contactsSlice';
 import { nanoid } from 'nanoid';
 import s from './ContactForm.module.css';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const handleSubmit = e => {
     e.preventDefault();
 
-    const id = nanoid(); 
+    // Перевіряю, чи контакт уже існує
+    const existingContact = contacts.find(contact => contact.name === name);
+    if (existingContact) {
+      alert('This contact already exists!');
+      return;
+    }
+
+    const id = nanoid();
 
     dispatch(addContact({ id, name, number }));
 
-    // Очистити форму
+    // Очищаю форму
     setName('');
     setNumber('');
   };
